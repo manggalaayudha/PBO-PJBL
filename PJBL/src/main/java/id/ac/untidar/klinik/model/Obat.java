@@ -15,10 +15,18 @@ public class Obat {
     private int harga;
     private int stok;
 
-    public Obat(String kodeObat, String nama, String dosis, int harga, int stok) {
-        if (harga <= 0) throw new IllegalArgumentException("Harga harus > 0");
-        if (stok < 0) throw new IllegalArgumentException("Stok tidak boleh negatif");
-        this.kodeObat = kodeObat;
+    public Obat(String kodeObat, String nama, String dosis,
+                int harga, int stok) {
+        if (harga <= 0)
+            throw new IllegalArgumentException("Harga harus > 0");
+        if (stok < 0)
+            throw new IllegalArgumentException("Stok tidak boleh negatif");
+        if (kodeObat == null || kodeObat.isBlank())
+            throw new IllegalArgumentException("Kode obat tidak boleh kosong");
+        if (nama == null || nama.isBlank())
+            throw new IllegalArgumentException("Nama obat tidak boleh kosong");
+
+        this.kodeObat = kodeObat.trim();
         this.nama = nama;
         this.dosis = dosis;
         this.harga = harga;
@@ -31,14 +39,22 @@ public class Obat {
     public int getStok() { return stok; }
 
     public boolean isTersedia(int jumlah) {
-        return stok >= jumlah;
+        return jumlah > 0 && stok >= jumlah;
     }
 
     public void kurangiStok(int jumlah) {
-        if (!isTersedia(jumlah)) {
-            throw new IllegalStateException("Stok obat " + nama + " tidak mencukupi");
-        }
-        this.stok -= jumlah;
+        if (jumlah <= 0)
+            throw new IllegalArgumentException("Jumlah pengurangan harus > 0");
+        if (!isTersedia(jumlah))
+            throw new IllegalStateException(
+                "Stok obat " + nama + " tidak mencukupi");
+        stok -= jumlah;
+    }
+
+    public void tambahStok(int jumlah) {
+        if (jumlah <= 0)
+            throw new IllegalArgumentException("Jumlah penambahan harus > 0");
+        stok += jumlah;
     }
 }
 
